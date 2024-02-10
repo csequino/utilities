@@ -34,6 +34,7 @@ public final class GenericsUtils {
 
     /**
      * Converts an array of objects into an object of the specified record type.
+     * Public access modifier is required for record type.
      *
      * @param a an array of objects containing values to be assigned to the record.
      * @param c the class of the target record.
@@ -70,6 +71,7 @@ public final class GenericsUtils {
     /**
      * Converts an array of objects into an instance of the specified class by mapping
      * array elements to fields annotated with {@code TupleColumn}.
+     * If specified class is a nested class the class access modifier must be public.
      *
      * @param a an array of objects containing values to be assigned to the object.
      * @param c the class of the target object.
