@@ -33,15 +33,26 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:https://github.com/csequino/utilities.git</connection>
-    <developerConnection>scm:git:https://github.com/csequino/utilities.git</developerConnection>
-    <url>https://github.com/csequino/utilities.gi</url>
+    <connection>scm:git:git@github.com:csequino/utilities.git</connection>
+    <developerConnection>scm:git:ssh://github.com:csequino/utilities.git</developerConnection>
+    <url>https://github.com/csequino/utilities/tree/main</url>
   </scm>
 
   <issueManagement>
     <system>GitHub</system>
     <url>https://github.com/csequino/utilities/issues</url>
   </issueManagement>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
 
   <properties>
     <java.version>11</java.version>
@@ -58,6 +69,7 @@
     <plugin.javadoc.version>3.6.3</plugin.javadoc.version>
     <plugin.source.version>3.3.0</plugin.source.version>
     <plugin.scm.version>2.0.1</plugin.scm.version>
+    <plugin.gpg.version>3.1.0</plugin.gpg.version>
   </properties>
 
   <build>
@@ -132,6 +144,20 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-scm-plugin</artifactId>
         <version>${plugin.scm.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>${plugin.gpg.version}</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
