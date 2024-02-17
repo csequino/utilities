@@ -70,6 +70,7 @@
     <plugin.source.version>3.3.0</plugin.source.version>
     <plugin.scm.version>2.0.1</plugin.scm.version>
     <plugin.gpg.version>3.1.0</plugin.gpg.version>
+    <plugin.central.version>0.3.0</plugin.central.version>
   </properties>
 
   <build>
@@ -158,6 +159,16 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.sonatype.central</groupId>
+        <artifactId>central-publishing-maven-plugin</artifactId>
+        <version>${plugin.central.version}</version>
+        <extensions>true</extensions>
+        <configuration>
+          <publishingServerId>ossrh</publishingServerId>
+          <tokenAuth>true</tokenAuth>
+        </configuration>
       </plugin>
     </plugins>
   </build>
