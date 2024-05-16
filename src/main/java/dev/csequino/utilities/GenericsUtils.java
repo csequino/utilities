@@ -21,7 +21,13 @@ import dev.csequino.utilities.annotations.TupleColumn;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -69,37 +75,61 @@ public final class GenericsUtils {
     }
 
     /**
-     * Converts an array of objects into an instance of the specified class by mapping
-     * array elements to fields annotated with {@code TupleColumn}.
+     * Converts an array of objects into an instance of a specified class,
+     * mapping array elements to the class fields based on the {@link TupleColumn} annotation.
      * If specified class is a nested class the class access modifier must be public.
      *
-     * @param a an array of objects containing values to be assigned to the object.
-     * @param c the class of the target object.
-     * @param <T> the type of the object.
-     * @return an instance of the object populated with values from the array.
-     * @throws NoSuchMethodException if a default constructor is not found in the specified class.
-     * @throws IllegalAccessException if access to the fields of the object is denied.
-     * @throws InstantiationException if an instance of the object cannot be created.
-     * @throws InvocationTargetException if an error occurs during the invocation of the object's constructor.
-     * @throws IllegalArgumentException if the type of array element does not match the type of the corresponding field.
+     * @param <T> the type of the object to be created
+     * @param a the array of objects to be mapped to the fields of the class
+     * @param c the class of the object to be created
+     * @return an instance of the specified class with fields populated from the array
+     * @throws NoSuchMethodException if the specified class does not have a no-argument constructor
+     * @throws InvocationTargetException if the underlying constructor throws an exception
+     * @throws InstantiationException if the specified class is an abstract class
+     * @throws IllegalAccessException if the constructor or field is not accessible
      */
     public static <T> T fromArrayToObject(Object[] a, Class<T> c)
             throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        // Create an instance of the object using the default constructor
+        // Create a new instance of class T
         Object o = c.getDeclaredConstructor().newInstance();
-        // Iterate over the fields of the object to map array elements to annotated fields
+        // Iterate over all declared fields in class T
         for (Field field : c.getDeclaredFields()) {
+            // Check if the field has the TupleColumn annotation
             TupleColumn rf = field.getAnnotation(TupleColumn.class);
-            // Check if field is annotated
             if (rf != null) {
-                // Check if the types match before setting the field value
-                if (rf.value() < a.length && a[rf.value()] != null && a[rf.value()].getClass().equals(field.getType())) {
-                    field.setAccessible(true);
-                    field.set(o, a[rf.value()]);
+                // Check if the index specified by the annotation is valid and if the corresponding array element is not null
+                if (rf.value() < a.length && a[rf.value()] != null) {
+                    // If the type of the array element matches the type of the field
+                    if (a[rf.value()].getClass().equals(field.getType())) {
+                        field.setAccessible(true);
+                        field.set(o, a[rf.value()]); // Set the field value
+                    }
+                    // Conversion from Date or java.sql.Date to LocalDate
+                    else if (field.getType().equals(LocalDate.class) && (a[rf.value()] instanceof Date || a[rf.value()] instanceof java.sql.Date)) {
+                        field.setAccessible(true);
+                        if (a[rf.value()] instanceof java.sql.Date) {
+                            field.set(o, ((java.sql.Date) a[rf.value()]).toLocalDate());
+                        } else {
+                            field.set(o, new java.sql.Date(((Date) a[rf.value()]).getTime()).toLocalDate());
+                        }
+                    }
+                    // Conversion from Date to LocalDateTime
+                    else if (field.getType().equals(LocalDateTime.class) && (a[rf.value()] instanceof Date || a[rf.value()] instanceof java.sql.Date)) {
+                        field.setAccessible(true);
+                        field.set(o, new Timestamp(((Date) a[rf.value()]).getTime()).toLocalDateTime());
+                    }
+                    // Conversion from Timestamp or Time to LocalTime
+                    else if (field.getType().equals(LocalTime.class) && (a[rf.value()] instanceof Timestamp || a[rf.value()] instanceof Time)) {
+                        field.setAccessible(true);
+                        if (a[rf.value()] instanceof Time) {
+                            field.set(o, ((Time) a[rf.value()]).toLocalTime());
+                        } else {
+                            field.set(o, ((Timestamp) a[rf.value()]).toLocalDateTime().toLocalTime());
+                        }
+                    }
                 }
             }
         }
-        // Cast the object to type T (the object type)
-        return c.cast(o);
+        return c.cast(o); // Return the object cast to type T
     }
 }

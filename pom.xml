@@ -6,7 +6,7 @@
 
   <groupId>dev.csequino</groupId>
   <artifactId>utilities</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <packaging>jar</packaging>
   <name>utilities</name>
   <description>A package of Java utility classes for application development</description>
@@ -72,6 +72,14 @@
     <plugin.gpg.version>3.1.0</plugin.gpg.version>
     <plugin.central.version>0.3.0</plugin.central.version>
   </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.1</version>
+    </dependency>
+  </dependencies>
 
   <build>
     <plugins>
