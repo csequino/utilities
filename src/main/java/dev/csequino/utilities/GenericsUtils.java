@@ -127,6 +127,16 @@ public final class GenericsUtils {
                             field.set(o, ((Timestamp) a[rf.value()]).toLocalDateTime().toLocalTime());
                         }
                     }
+                    // Conversion from Long to Integer
+                    else if (field.getType().equals(Integer.class) && (a[rf.value()] instanceof Long)) {
+                        field.setAccessible(true);
+                        field.set(o, ((Long) a[rf.value()]).intValue());
+                    }
+                    // Conversion to Number
+                    else if (field.getType().equals(Number.class)) {
+                        field.setAccessible(true);
+                        field.set(o, a[rf.value()]);
+                    }
                 }
             }
         }

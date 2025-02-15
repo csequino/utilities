@@ -41,6 +41,8 @@ public class GenericsUtilsTest {
         LocalDate aLocalDate;
         @TupleColumn(12)
         LocalTime aLocalTime;
+        @TupleColumn(13)
+        Number aNumber;
     }
 
     @Test
@@ -49,19 +51,20 @@ public class GenericsUtilsTest {
         LocalDateTime localDateTime = LocalDateTime.of(localDate, LocalTime.of(23, 59, 59));
         LocalTime localTime = localDateTime.toLocalTime();
         Date date = new Date();
-        checkConversion(new Object[]{"String", Integer.valueOf("1"), Double.valueOf("1.0"), Long.valueOf("1"),
+        checkConversion(new Object[] { "String", Integer.valueOf("1"), Double.valueOf("1.0"), Long.valueOf("1"),
                 BigInteger.valueOf(1), BigDecimal.valueOf(1.0), date, java.sql.Date.valueOf(localDate),
-                java.sql.Time.valueOf(localTime), Timestamp.valueOf(localDateTime), localDateTime, localDate, localTime },
-                date, localDate, localTime, localDateTime, Timestamp.valueOf(localDateTime), java.sql.Date.valueOf(localDate));
+                java.sql.Time.valueOf(localTime), Timestamp.valueOf(localDateTime), localDateTime, localDate, localTime,
+                Integer.valueOf("1") }, date, localDate, localTime, localDateTime, Timestamp.valueOf(localDateTime),
+                java.sql.Date.valueOf(localDate));
         checkConversion(new Object[] { "String", Integer.valueOf("1"), Double.valueOf("1.0"), Long.valueOf("1"),
                 BigInteger.valueOf(1), BigDecimal.valueOf(1.0), date, java.sql.Date.valueOf(localDate),
                 java.sql.Time.valueOf(localTime), Timestamp.valueOf(localDateTime), date, java.sql.Date.valueOf(localDate),
-                java.sql.Time.valueOf(localTime) }, date, localDate, localTime, new Timestamp(date.getTime()).toLocalDateTime(),
-                Timestamp.valueOf(localDateTime), java.sql.Date.valueOf(localDate));
+                java.sql.Time.valueOf(localTime), Double.valueOf("1.0") }, date, localDate, localTime,
+                new Timestamp(date.getTime()).toLocalDateTime(), Timestamp.valueOf(localDateTime), java.sql.Date.valueOf(localDate));
         checkConversion(new Object[] { "String", Integer.valueOf("1"), Double.valueOf("1.0"), Long.valueOf("1"),
                 BigInteger.valueOf(1), BigDecimal.valueOf(1.0), date, java.sql.Date.valueOf(localDate),
                 java.sql.Time.valueOf(localTime), Timestamp.valueOf(localDateTime), java.sql.Date.valueOf(localDate),
-                date, Timestamp.valueOf(localDateTime) }, date, new java.sql.Date(date.getTime()).toLocalDate(),
+                date, Timestamp.valueOf(localDateTime), new BigDecimal("1.0") }, date, new java.sql.Date(date.getTime()).toLocalDate(),
                 localTime, localDateTime.withHour(0).withMinute(0).withSecond(0), Timestamp.valueOf(localDateTime),
                 java.sql.Date.valueOf(localDate));
     }
@@ -83,5 +86,6 @@ public class GenericsUtilsTest {
         assert testClass.aLocalDate.equals(localDate);
         assert testClass.aLocalTime.equals(localTime);
         assert testClass.aLocalDateTime.equals(localDateTime);
+        assert testClass.aNumber.intValue() == 1;
     }
 }

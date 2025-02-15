@@ -6,7 +6,7 @@
 
   <groupId>dev.csequino</groupId>
   <artifactId>utilities</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
   <packaging>jar</packaging>
   <name>utilities</name>
   <description>A package of Java utility classes for application development</description>
